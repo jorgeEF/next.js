@@ -1,7 +1,14 @@
 import Link from "next/link"
+import { useRouter} from "next/router"
 
 
 export default function HomePage() {
+
+    const router = useRouter();
+
+    function handleNavigate(){
+        router.push('/login')
+    }
 
     return (
         <div>
@@ -14,6 +21,7 @@ export default function HomePage() {
                 <Link href="/list">
                     <button style={{ padding: '20px', fontSize: '16px', borderRadius: '8px', cursor: 'pointer' }}>Lista</button>
                 </Link>
+                <button onClick={handleNavigate}>Login Alternativo</button>
             </div>
         </div>
     )
