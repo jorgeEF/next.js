@@ -1,5 +1,5 @@
 import Link from "next/link"
-
+import {list} from "../../utils"
 /* 
 //lista estática hardcodeada
 export default function List() {
@@ -71,6 +71,7 @@ export default function List(props) {
 }
 */
 
+/*
 //Lista con datos externos (API) y getStaticProps
 
 export async function getStaticProps() {
@@ -95,6 +96,67 @@ export default function List(props) {
 
     return (
         <div>
+            <h3>Datos desde la API</h3>
+
+            <ul>
+                {
+                    products && products.length > 0 ? products.map((item) => (
+                        <li key={item.id}>
+                            <p>
+                                <span>Título : </span>
+                                <span>{item.title}</span>
+                            </p>
+                            <p>
+                                <span>Descripción : </span>
+                                <span>{item.description}</span>
+                            </p>
+                        </li>
+                    )) : null
+                }
+            </ul>
+
+        </div>
+    );
+}
+*/
+
+//Lista getStaticProps con datos locales (utils.js) y externos con API
+
+export async function getStaticProps() {
+
+    // Llamado de API
+    const apiResponse = await fetch('https://dummyjson.com/products');
+    const jsonResponseFromApiResponse = await apiResponse.json();
+    
+
+    return {
+        //listOfItems de la lista de utils.js
+        props: {
+            listOfItems: list,
+            listOfDataFromApi : jsonResponseFromApiResponse
+        },
+    };
+}
+
+//Mostrando lista de datos externos (API) con getStaticProps
+export default function List(props) { 
+    
+    const { listOfItems, listOfDataFromApi } = props;
+    const {products} = listOfDataFromApi
+
+    return (
+        <div>
+            <h1>Componente Lista</h1>
+            <ul>                
+                {
+                    listOfItems && listOfItems.length > 0 ? listOfItems.map((item) => (
+                        <Link key={item.id} href={`/list/${item.id}`}>                            
+                            <li>{item.label}</li>
+                        </Link>
+                    )) : null
+                }
+            </ul>
+
             <h3>Datos desde la API</h3>
 
             <ul>
