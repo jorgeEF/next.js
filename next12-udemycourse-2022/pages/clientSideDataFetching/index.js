@@ -1,8 +1,5 @@
 import { Fragment, useEffect, useState } from "react"
 
-
-
-
 export default function ClienteSideDataFetching() {
 
     // obtener estado de carga 
