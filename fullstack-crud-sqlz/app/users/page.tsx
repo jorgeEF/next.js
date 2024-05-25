@@ -1,24 +1,33 @@
-import axios from "axios";
-import { UserCard } from "@/components/UserCard";
+"use client";
 
-async function loadUser() {
-  const { data } = await axios.get("http://localhost:3000/api/users");
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { UserCard } from '@/components/UserCard';
+import { User } from '@/utils/types';
+
+
+async function loadUser(): Promise<User[]> {
+  const { data } = await axios.get('/api/users');
   console.log(data);
   return data;
 }
 
-async function UsersPage() {
-  const users = await loadUser();
+export default function UsersPage() {
+  const [users, setUsers] = useState<User[]>([]);
 
-  if (users.length === 0) return <h1>No Products</h1>;
+  useEffect(() => {
+    async function fetchUsers() {
+      const usersData = await loadUser();
+      setUsers(usersData);
+    }
+    fetchUsers();
+  }, []);
 
-  return (
+  return (    
     <div className="grid gap-4 grid-cols-1 md:grid-cols-4">
-      {users.map((user: { id: any; }) => (
+      {users.map((user) => (
         <UserCard key={user.id} user={user} />
       ))}
     </div>
   );
 }
-
-export default UsersPage;

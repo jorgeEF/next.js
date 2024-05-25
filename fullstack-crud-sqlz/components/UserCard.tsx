@@ -1,6 +1,13 @@
 import Link from "next/link";
+import { User } from '@/utils/types';
 
-export function UserCard(user:any) {
+
+
+interface UserCardProps {
+  user: User;
+}
+
+export function UserCard({ user }: UserCardProps) {
   return (
     <Link
       href={`/users/${user.id}`}
@@ -13,7 +20,7 @@ export function UserCard(user:any) {
         {user.lastname}
       </p>
       <p className="font-bold text-gray-800 dark:text-gray-100 text-2xl">
-        {user.email} $
+        {user.email}
       </p>
     </Link>
   );
