@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { UserCard } from '@/components/UserCard';
 import { User } from '@/utils/types';
+import {UserTable} from '@/components/UserTable';
 
 
 async function loadUser(): Promise<User[]> {
@@ -23,11 +23,9 @@ export default function UsersPage() {
     fetchUsers();
   }, []);
 
-  return (    
-    <div className="grid gap-4 grid-cols-1 md:grid-cols-4">
-      {users.map((user) => (
-        <UserCard key={user.id} user={user} />
-      ))}
+  return (        
+    <div className="min-h-screen flex items-center justify-center">
+      <UserTable users={users} />
     </div>
   );
 }
