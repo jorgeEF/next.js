@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import userModel from '../models/userModel.ts'
+import { User } from '@/utils/types';
 
 // CRUD
 
@@ -35,7 +36,7 @@ export const createUser = async (userData: any) => {
 };
 
 // editar un usuario
-export const updateUser = async (id: number, userData: any) => {
+/* export const updateUser = async (id: number, userData: any) => {
     try {
         await userModel.update(userData, {
             where: { id }
@@ -44,7 +45,23 @@ export const updateUser = async (id: number, userData: any) => {
     } catch (error: any) {
         throw new Error(error.message);
     }
-};
+}; */
+export const updateUser = async (id: number, data: Partial<User>) => {
+    try {
+      const [affectedCount, affectedRows] = await userModel.update(data, {
+        where: { id },
+        returning: true,
+      });
+  
+      if (affectedCount === 0) {
+        throw new Error('Usuario no encontrado');
+      }
+  
+      return affectedRows[0]; // Devuelve el usuario actualizado
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  };
 
 // eliminar un usuario
 export const deleteUser = async (id: number) => {

@@ -1,27 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { useRouter } from 'next/router';
-import { deleteUser } from '../../../../controllers/userController.ts';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { deleteUser } from '@/controllers/userController';
 
-export async function DELETE(req: NextRequest) {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { id } = req.query;
+
+  if (req.method === 'DELETE') {
     try {
-        // Obtener el router de Next.js
-        const router = useRouter();
-        
-        // Obtener el parámetro 'id' de la URL y convertirlo en un número
-        const id = router.query.id ? parseInt(router.query.id as string) : null;
+      // Asegúrate de que el id sea un número
+      const userId = Array.isArray(id) ? parseInt(id[0], 10) : parseInt(id as string, 10);
 
-        // Verificar si el ID es un número válido
-        if (!id || isNaN(id)) {
-            throw new Error("ID de usuario no válido");
-        }
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: 'ID de usuario inválido' });
+      }
 
-        // Eliminar el usuario con el ID proporcionado
-        await deleteUser(id);
-
-        // Devolver una respuesta de éxito
-        return NextResponse.json({ message: "Usuario eliminado correctamente" });
+      await deleteUser(userId);
+      return res.status(200).json({ message: 'Usuario eliminado correctamente' });
     } catch (error: any) {
-        // Manejar errores y devolver una respuesta con un mensaje de error
-        return NextResponse.json({ message: error.message }, { status: 500 });
+      return res.status(500).json({ message: error.message });
     }
-}
+  } else {
+    return res.status(405).json({ message: 'Método no permitido' });
+  }
+};
+
+export default handler;
+

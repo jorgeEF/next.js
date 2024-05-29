@@ -1,35 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { useRouter } from 'next/router';
-import { updateUser } from '../../../../controllers/userController.ts';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { updateUser } from '@/controllers/userController';
 
-export async function PUT(req: NextRequest) {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { id } = req.query;
+
+  if (req.method === 'PUT') {
     try {
-        // Obtener el router de Next.js
-        const router = useRouter();
+      const userId = Array.isArray(id) ? parseInt(id[0], 10) : parseInt(id as string, 10);
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: 'ID de usuario inválido' });
+      }
 
-        // Obtener el parámetro 'id' de la URL
-        const { id } = router.query;
-
-        // Verificar si el ID es un número válido
-        if (!id || isNaN(parseInt(id as string))) {
-            throw new Error("ID de usuario no válido");
-        }
-
-        // Verificar si req.body es null
-        if (!req.body) {
-            throw new Error("El cuerpo de la solicitud está vacío");
-        }
-
-        // Obtener los datos del cuerpo de la solicitud
-        const userData = req.body;
-
-        // Actualizar el usuario con los datos proporcionados
-        await updateUser(parseInt(id as string), userData);
-
-        // Devolver una respuesta de éxito
-        return NextResponse.json({ message: "Usuario editado correctamente" });
+      const updatedUser = await updateUser(userId, req.body);
+      return res.status(200).json(updatedUser);
     } catch (error: any) {
-        // Manejar errores y devolver una respuesta con un mensaje de error
-        return NextResponse.json({ message: error.message }, { status: 500 });
+      return res.status(500).json({ message: error.message });
     }
-}
+  } else {
+    return res.status(405).json({ message: 'Método no permitido' });
+  }
+};
+
+export default handler;
