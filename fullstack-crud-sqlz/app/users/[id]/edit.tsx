@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { User } from '@/utils/types';
 
-export const EditUser = () => {
+export const Edit = () => {
   const router = useRouter();
   const { id } = router.query;
 
@@ -19,7 +19,7 @@ export const EditUser = () => {
     if (id) {
       const fetchUser = async () => {
         try {
-          const response = await axios.get(`/api/users/${id}`);
+          const response = await axios.get(`/api/users/${id}/get`);
           setUser(response.data);
           setFormData({
             username: response.data.username,
