@@ -3,7 +3,7 @@
 import { useEffect, useState, use } from 'react';
 import axios from 'axios';
 import { User } from '@/utils/types';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 
 async function loadUser(id: string): Promise<User> {
