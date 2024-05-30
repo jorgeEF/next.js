@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { User } from '@/utils/types';
-import { useParams, redirect, useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 async function loadUser(id: string): Promise<User> {
   const { data } = await axios.get(`/api/users/${id}`);
