@@ -12,3 +12,4 @@ CRUD básico de usuarios realizado en Next 14 por Jorge E. Femenía
 `npm run dev`
 5. Ingresar a [http://localhost:3000](http://localhost:3000) en tu navegador.
 
+**NOTA:** /utils/crear_db.sql posee la estructura y los datos para la base de datos MySQL requerida.
