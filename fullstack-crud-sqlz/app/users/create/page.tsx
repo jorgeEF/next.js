@@ -1,14 +1,9 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { User } from '@/utils/types';
 import { useRouter } from 'next/navigation';
-
-async function loadUser(id: string): Promise<User> {
-  const { data } = await axios.get(`/api/users/${id}`);
-  return data;
-}
 
 export default function CreateUserPage() {
   const [user, setUser] = useState<User>({
