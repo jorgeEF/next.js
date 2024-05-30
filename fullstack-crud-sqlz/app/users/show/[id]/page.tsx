@@ -1,38 +1,49 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import axios from 'axios';
 import { User } from '@/utils/types';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 
-export default function UserPage() {
-  const [user, setUser] = useState<User | null>(null);
-  const [userId, setUserId] = useState<string | null>(null); // Guardamos el ID del usuario
-
-  useEffect(() => {
-    // Extraer el ID del usuario de la URL
-    const pathParts = window.location.pathname.split('/');
-    const id = pathParts[pathParts.length - 1];
-    setUserId(id);
-
-    // Obtener los datos del usuario usando el ID
-    if (id) {
-      axios.get(`/api/users/${id}`)
-        .then(response => setUser(response.data))
-        .catch(error => console.error('Error fetching user data:', error));
-    }
-  }, []);
-
-  return (
-    <div className="container mx-auto px-4 min-h-screen flex items-center justify-center">
-      {user ? (
-        <div>
-          <h1>{user.name}</h1>
-          <p>Email: {user.email}</p>          
-        </div>
-      ) : (
-        <p>No se encontró ningún usuario con el ID especificado</p>
-      )}
-    </div>
-  );
+async function loadUser(id: string): Promise<User> {
+  const { data } = await axios.get(`/api/users/${id}`);
+  return data;
 }
 
+export default function ShowUserPage() {
+  const [user, setUser] = useState<User>();
+  const { id } = useParams();  
+  const router = useRouter();
+
+  useEffect(() => {
+    async function fetchUser() {
+      const userData = await loadUser(id[0]);
+      setUser(userData);
+    }
+    fetchUser();
+  }, [id]);  
+
+  return (
+    <div className="container mx-auto px-4 min-h-screen flex flex-direction-column items-center justify-center gap-4">      
+      {user ? (
+        <div>
+          <p>User Id: <i>{user.id}</i></p>
+          <p>Usuario: <i>{user.username}</i></p>
+          <p>Nombre: {user.name} </p>
+          <p>Apellido: {user.lastname} </p>
+          <p>Email: {user.email}</p>
+          <p>Password: {user.password}</p>
+
+          <div className='flex gap-4 justify-center'>
+            <Link href={`/users/edit/${user.id}`}>Editar</Link>
+            <Link href="/users">Volver</Link>
+          </div>
+        </div>) : (
+        <p>Loading...</p>
+      )}
+
+    </div>
+
+  );
+}
