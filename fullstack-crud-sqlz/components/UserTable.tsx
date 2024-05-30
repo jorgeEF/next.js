@@ -1,25 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { User } from '@/utils/types';
 import Link from 'next/link';
-import axios from 'axios';
-import { useRouter } from 'next/router';
 
 interface UserTableProps {
   users: User[];
+  onDelete: (id: number) => void;
 }
 
-export const UserTable = ({ users }: UserTableProps) => {
-  const handleDelete = async (id: number) => {
-    if (typeof window !== 'undefined' && window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-      try {
-        await axios.delete(`/api/users/${id}`);
-        const router = useRouter();  // Se usa aquí, dentro del manejador de evento
-        router.push('/users');
-      } catch (error) {
-        console.error('Error deleting user:', error);
-      }
-    }
-  };
+export const UserTable = ({ users, onDelete }: UserTableProps) => {      
 
   return (
     <div className="overflow-x-auto w-full md:w-full mx-auto">
@@ -46,19 +34,19 @@ export const UserTable = ({ users }: UserTableProps) => {
         <tbody className="bg-white divide-y divide-gray-200">
           {users.map((user) => (
             <tr key={user.id}>
-              
+
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><Link href={`/users/show/${user.id}`} passHref>{user.username}</Link></td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><Link href={`/users/show/${user.id}`} passHref>{user.name}</Link></td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><Link href={`/users/show/${user.id}`} passHref>{user.lastname}</Link></td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><Link href={`/users/show/${user.id}`} passHref>{user.email}</Link></td>
-              
+
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <Link href={`/users/edit/${user.id}`} passHref>
-                  <button className="text-blue-600 hover:text-blue-900 mr-4">Editar</button>
+                  <button type="button" className="bg-yellow-500 hover:bg-yellow-700 text-black font-bold text-xs py-1 px-2 rounded mr-2">Editar</button>
                 </Link>
                 <button
-                  className="text-red-600 hover:text-red-900"
-                  onClick={() => handleDelete(user.id)}
+                  className="bg-red-600 hover:bg-red-800 text-black font-bold text-xs py-1 px-2 rounded"
+                  onClick={() => user.id && onDelete(user.id)}
                 >
                   Eliminar
                 </button>
@@ -66,7 +54,7 @@ export const UserTable = ({ users }: UserTableProps) => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table>      
     </div>
   );
 };
