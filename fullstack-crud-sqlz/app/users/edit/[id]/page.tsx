@@ -115,9 +115,9 @@ export default function ShowUserPage() {
               </tr>
             </tbody>
           </table>
-          <div className="flex justify-center gap-4">
-            <button type="submit">Actualizar</button>
-            <button type="button" onClick={handleCancel}>Cancelar</button>
+          <div className="flex justify-center mt-2">
+            <button type="submit" className="bg-yellow-500 hover:bg-yellow-300 text-black rounded p-1 mr-2">Actualizar</button>
+            <button type="button" onClick={handleCancel} className="bg-gray-500 hover:bg-gray-400 text-black rounded p-1">Cancelar</button>
           </div>
           <div>
             {successMessage && (
