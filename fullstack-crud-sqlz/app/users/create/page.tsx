@@ -3,49 +3,42 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { User } from '@/utils/types';
-import { useParams, redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 async function loadUser(id: string): Promise<User> {
   const { data } = await axios.get(`/api/users/${id}`);
   return data;
 }
 
-export default function ShowUserPage() {
-  const [user, setUser] = useState<User>();
-  const { id } = useParams();
+export default function CreateUserPage() {
+  const [user, setUser] = useState<User>({    
+    username: '',
+    name: '',
+    lastname: '',
+    email: '',
+    password: '',
+  });
   const [successMessage, setSuccessMessage] = useState('');
   const router = useRouter();
 
-  useEffect(() => {
-    async function fetchUser() {
-      const userData = await loadUser(id[0]);
-      setUser(userData);
-    }
-    fetchUser();
-  }, [id]);
-
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (user) {
-      setUser({
-        ...user,
-        [event.target.name]: event.target.value,
-      });
-    }
-  };  
+    setUser({
+      ...user,
+      [event.target.name]: event.target.value,
+    });
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (user) {
-      try {
-        await axios.put(`/api/users/${user.id}`, user);
-        setSuccessMessage('Usuario actualizado correctamente');
-        setTimeout(() => {
-          router.push('/users');
-        }, 2000); // Redirigir después de 2 segundos
-      } catch (error) {
-        console.error('Error updating user:', error);
-        // Mostrar mensaje de error
-      }
+    try {
+      await axios.post(`/api/users/`, user);
+      setSuccessMessage('Usuario creado correctamente');
+      setTimeout(() => {
+        router.push('/users');
+      }, 2000); // Redirigir después de 2 segundos
+    } catch (error) {
+      console.error('Error creando el usuario:', error);
+      // Mostrar mensaje de error
     }
   };
 
@@ -54,10 +47,8 @@ export default function ShowUserPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 min-h-screen flex flex-col items-center justify-center">      
-      {user ? (
-        <form onSubmit={handleSubmit}>
-          <p>User Id: {user.id}</p>
+    <div className="container mx-auto px-4 min-h-screen flex flex-col items-center justify-center color-black">      
+        <form onSubmit={handleSubmit}>          
           <div>
           <label>
             Username:
@@ -114,7 +105,7 @@ export default function ShowUserPage() {
           </label>
           </div>
           <div className="flex justify-center gap-4">
-          <button type="submit">Actualizar</button>
+          <button type="submit">Crear Usuario</button>
           <button type="button" onClick={handleCancel}>Cancelar</button>
           </div>
           <div>
@@ -123,9 +114,6 @@ export default function ShowUserPage() {
             )}
           </div>
         </form>
-      ) : (
-        <p>Loading...</p>
-      )}
     </div>
   );
 }

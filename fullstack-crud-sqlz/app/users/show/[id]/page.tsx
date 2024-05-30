@@ -13,8 +13,7 @@ async function loadUser(id: string): Promise<User> {
 
 export default function ShowUserPage() {
   const [user, setUser] = useState<User>();
-  const { id } = useParams();  
-  const router = useRouter();
+  const { id } = useParams();
 
   useEffect(() => {
     async function fetchUser() {
@@ -25,7 +24,7 @@ export default function ShowUserPage() {
   }, [id]);  
 
   return (
-    <div className="container mx-auto px-4 min-h-screen flex flex-direction-column items-center justify-center gap-4">      
+    <div className="container mx-auto px-4 min-h-screen flex flex-col items-center justify-center gap-4">      
       {user ? (
         <div>
           <p>User Id: <i>{user.id}</i></p>
@@ -44,6 +43,5 @@ export default function ShowUserPage() {
       )}
 
     </div>
-
   );
 }
